@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+
+    <Appenders>
+
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %level - %m%n%ex%n"/>
+        </Console>
+
+        <RollingFile name="rolling_error" fileName="C:/app/error.log" filePattern="C:/app/error-%d{yyyy-MM-dd}.log-%i">
+            <PatternLayout pattern="[%-5p] %d{yy-MM-dd HH:mm:ss} [%C{2}][%M][%L] - %m%n" />
+            <Policies>
+                <Policies>
+                    <SizeBasedTriggeringPolicy size="10000KB" />
+                </Policies>
+            </Policies>
+            <DefaultRolloverStrategy max="50" fileIndex="max" />
+        </RollingFile>
+
+        <RollingFile name="rolling_console" fileName="C:/app/console.log" filePattern="C:/app/console-%d{yyyy-MM-dd}.log-%i">
+            <PatternLayout pattern="[%-5p] %d{yy-MM-dd HH:mm:ss} [%C{2}][%M][%L] - %m%n" />
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10000KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="50" fileIndex="max" />
+        </RollingFile>
+
+        <RollingFile name="rolling_study" fileName="C:/app/study.log" filePattern="C:/app/study-%d{yyyy-MM-dd}.log-%i">
+            <PatternLayout pattern="[%-5p] %d{yy-MM-dd HH:mm:ss} [%C{2}][%M][%L] - %m%n" />
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10000KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="50" fileIndex="max" />
+        </RollingFile>
+
+    </Appenders>
+
+    <loggers>
+
+        <Root level="INFO" additivity="false" >
+            <AppenderRef ref="console" />
+        </Root>
+
+        <logger name="log4jdbc.log4j2" level="error" additivity="false">
+            <appender-ref ref="console" />
+        </logger>
+
+        <logger name="jdbc.sqlonly" additivity="false" level="INFO">
+            <appender-ref ref="console" />
+            <appender-ref ref="rolling_console" />
+        </logger>
+
+        <logger name="jdbc.resultsettable" additivity="false" level="INFO">
+            <appender-ref ref="console" />
+            <appender-ref ref="rolling_console" />
+        </logger>
+
+        <logger name="jdbc.sqltiming" level="off"/>
+        <logger name="jdbc.audit" level="off"/>
+        <logger name="jdbc.resultset" level="off"/>
+        <logger name="jdbc.connection" level="off"/>
+
+        <logger name = "com.error" level="INFO" additivity="false" >
+            <appender-ref ref="console" />
+            <AppenderRef ref="rolling_error"/>
+        </logger>
+
+        <logger name = "com.study" level="INFO" additivity="false" >
+            <appender-ref ref="console" />
+            <AppenderRef ref="rolling_study"/>
+        </logger>
+
+    </loggers>
+
+</Configuration>

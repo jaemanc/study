@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.org.study.addr.AddrMapper">
+
+    <select id="getAddr" parameterType="hashMap" resultType="com.org.study.addr.AddrDto">
+        SELECT
+            user_id
+            ,user_nm
+            ,birth
+            ,gender
+            ,email
+            ,phone
+            ,memo
+        FROM tb_address
+        WHERE user_id = #{user_id}
+    </select>
+
+    <select id="getAddrList" parameterType="hashMap" resultType="com.org.study.addr.AddrDto">
+        SELECT
+            user_id
+            ,user_nm
+            ,email
+        FROM tb_address
+        WHERE 1=1
+
+        <if test="search_word != null and search_word != ''">
+            AND ( user_id like CONCAT('%', #{search_word,jdbcType=VARCHAR},'%') OR user_nm like CONCAT('%', #{search_word,jdbcType=VARCHAR},'%' ) )
+        </if>
+        AND del_yn ='N'
+        ORDER BY created_dtm DESC
+        LIMIT #{count, jdbcType=INTEGER}
+        OFFSET #{page}
+    </select>
+
+
+    <update id="putAddr" parameterType="hashMap">
+        update tb_address
+        set
+        user_id = #{user_id}
+
+        <if test="user_nm != null and user_nm != ''">
+            ,user_nm = #{user_nm}
+        </if>
+        <if test="birth != null and birth != ''">
+            ,birth = #{birth}
+        </if>
+        <if test="gender != null and gender != ''">
+            ,gender = #{gender}
+        </if>
+        <if test="email != null and email != ''">
+            ,email = #{email}
+        </if>
+        <if test="phone != null and phone != ''">
+            ,phone = #{phone}
+        </if>
+        <if test="memo != null and memo != ''">
+            ,memo = #{memo}
+        </if>
+        <if test="del_yn != null and del_yn != ''">
+            ,del_yn = #{del_yn}
+        </if>
+        WHERE user_id = #{user_id};
+    </update>
+
+    <insert id="postAddr" parameterType="com.org.study.addr.AddrDto">
+        insert into tb_address
+            (
+            user_id
+            ,user_nm
+            ,birth
+            ,gender
+            ,email
+            ,phone
+            ,memo
+            ,del_yn
+            ,created_dtm
+            )
+        values
+            (
+             #{user_id}
+            ,#{user_nm}
+            ,#{birth}
+            ,#{gender}
+            ,#{email}
+            ,#{phone}
+            ,#{memo}
+            ,'N'
+            ,SYSDATE()
+            )
+    </insert>
+
+    <update id="deleteAddr" parameterType="hashMap">
+        UPDATE tb_address
+        SET
+            del_yn = 'Y'
+            ,update_dtm = SYSDATE()
+        WHERE user_id = #{user_id}
+    </update>
+
+</mapper>
